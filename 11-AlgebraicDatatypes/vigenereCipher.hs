@@ -16,18 +16,15 @@ numList :: [(Int, Char)]
 numList = zip [0..25] ['A'..'Z']
 
 findNum :: Char -> Int
-findNum x = case lookup x alphaList of
-              Just z  -> z
-              Nothing -> 1000 -- unknowns will be 1000
+findNum x = fromJust $ lookup x alphaList
 
 findLetter :: Int -> Char
-findLetter x | x == 2000 = ' ' -- a tuple of unknowns together
-             | x > 25    = fromJust $ lookup (mod x 26) numList
+findLetter x | x > 25    = fromJust $ lookup (mod x 26) numList
              | x < 0     = fromJust $ lookup (length numList + x) numList
              | otherwise = fromJust $ lookup x numList 
 
 cipherPhrase :: String -> String -> [(Char, Char)]
-cipherPhrase secret keyword = go secret (cycle keyword)
+cipherPhrase secret keyword = go (map toUpper secret) (cycle (map toUpper keyword))
   where go []       (k:ks) = []
         go (' ':ps) (k:ks) = (' ', ' ') : go ps (k:ks)
         go (p:ps)   (k:ks) = (p, k)     : go ps ks
