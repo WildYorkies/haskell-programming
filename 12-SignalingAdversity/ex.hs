@@ -89,9 +89,12 @@ integerToNat x
 myIterate :: (a -> a) -> a -> [a]
 myIterate f acc = acc : myIterate f (f acc)
 
+-- take 10 $ myUnfoldr (\b -> Just (b, b+1)) 0
+-- [0,1,2,3,4,5,6,7,8,9]
 myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
 myUnfoldr f acc = case f acc of Nothing      -> []
                                 Just (x, x') -> x : myUnfoldr f x'
+
 
 betterIterate :: (a -> a) -> a -> [a]
 betterIterate f x = myUnfoldr (\b -> Just (b, f b)) x 
@@ -101,11 +104,11 @@ data BinaryTree a =
   | Node (BinaryTree a) a (BinaryTree a) 
   deriving (Eq, Ord, Show)
 
---this doesn't work yet
+-- unfold (\a -> Just (Node x y z, a+1, Node q r s)) 0
 unfold :: (a -> Maybe (a,b,a)) -> a -> BinaryTree b 
 unfold f acc = case f acc of Nothing             -> Leaf
                              Just (left,n,right) -> Node (unfold f left) n (unfold f right)
 
---treeBuild :: Integer -> BinaryTree Integer
---treeBuild n = take n $ unfold (\a -> Just (a, a+1, a)) (0 :: Integer)
+treeBuild :: Integer -> BinaryTree Integer
+treeBuild n = unfold (\a -> if a < n then Just (a+1, a, a+1) else Nothing) 0
 
