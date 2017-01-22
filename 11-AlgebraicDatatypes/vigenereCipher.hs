@@ -20,10 +20,7 @@ findLetter x | x > 25    = fromJust $ lookup (mod x 26) numList
         numList = zip [0..25] ['A'..'Z']
 
 createCipher :: String -> String -> [(Char, Char)]
-createCipher phrase keyword = go (map toUpper phrase) (cycle (map toUpper keyword))
-  where go []       (k:ks) = []
-        go (' ':ps) (k:ks) = (' ', ' ') : go ps (k:ks)
-        go (p:ps)   (k:ks) = (p, k)     : go ps ks
+createCipher phrase keyword = zip (map toUpper phrase) (cycle (map toUpper keyword))
 
 shiftChar :: Operation -> (Char, Char) -> Char
 shiftChar _  (' ', ' ') = ' '
